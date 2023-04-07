@@ -20,7 +20,7 @@ import java.sql.SQLException;
 /**
  * Servlet implementation class CreaUtenteServlet
  */
-@WebServlet(urlPatterns = "/controlpanel/creaUtente")
+@WebServlet(urlPatterns = "/BibliotecaTest/controlpanel/creaUtente")
 public class CreaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String INSERTQUERY = "INSERT INTO utente(nome, cognome, data_nascita) VALUES(?,?,?)";
