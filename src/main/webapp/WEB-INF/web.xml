@@ -44,4 +44,26 @@
     <servlet-name>ControlPanelServlet</servlet-name>
     <url-pattern>/ControlPanelServlet</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>AggiornaUtenteServlet</display-name>
+    <servlet-name>AggiornaUtenteServlet</servlet-name>
+    <servlet-class>it.luca.biblioteca.management.utente.AggiornaUtenteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AggiornaUtenteServlet</servlet-name>
+    <url-pattern>/controlpanel/aggiornaUtente</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <description></description>
+    <display-name>CreaUtenteServlet</display-name>
+    <servlet-name>CreaUtenteServlet</servlet-name>
+    <servlet-class>it.luca.biblioteca.management.utente.CreaUtenteServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CreaUtenteServlet</servlet-name>
+    <url-pattern>/controlpanel/creaUtente</url-pattern>
+  </servlet-mapping>
 </web-app>
