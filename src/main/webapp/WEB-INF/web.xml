@@ -53,7 +53,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>AggiornaUtenteServlet</servlet-name>
-    <url-pattern>/controlpanel/aggiornaUtente</url-pattern>
+    <url-pattern>/AggiornaUtenteServlet</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -64,6 +64,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>CreaUtenteServlet</servlet-name>
-    <url-pattern>/controlpanel/creaUtente</url-pattern>
+    <url-pattern>/CreaUtenteServlet</url-pattern>
   </servlet-mapping>
 </web-app>
