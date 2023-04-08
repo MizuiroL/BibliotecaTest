@@ -1,0 +1,11 @@
+USE biblioteca;
+
+DROP TABLE IF EXISTS utente;
+
+CREATE TABLE utente (
+	id INT NOT NULL AUTO_INCREMENT,
+	nome VARCHAR(100) NOT NULL,
+	cognome VARCHAR(100) NOT NULL,
+	data_nascita DATE,
+	PRIMARY KEY(id)
+);
