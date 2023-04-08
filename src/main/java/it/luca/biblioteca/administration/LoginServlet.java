@@ -37,7 +37,6 @@ public class LoginServlet extends HttpServlet {
 			session.setAttribute("username", username);
 		} else {
 			System.out.println("Password sbagliata " + password);
-			writer.print("Reindirizzazione alla homepage");
 			request.getRequestDispatcher("index.html").include(request, response);
 		}
 		writer.close();

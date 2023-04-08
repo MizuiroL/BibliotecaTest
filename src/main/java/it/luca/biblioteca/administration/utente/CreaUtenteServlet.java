@@ -1,4 +1,4 @@
-package it.luca.biblioteca.management.utente;
+package it.luca.biblioteca.administration.utente;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -12,17 +12,18 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Servlet implementation class EliminaUtenteServlet
+ * Servlet implementation class CreaUtenteServlet
  */
-@WebServlet("/controlPanel/eliminaUtente")
-public class EliminaUtenteServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/controlpanel/creaUtente")
+public class CreaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String DELETEQUERY = "DELETE FROM utente WHERE id = ?";
+	private static final String INSERTQUERY = "INSERT INTO utente(nome, cognome, data_nascita) VALUES(?,?,?)";
 	private Connection connection;
 
 	/**
@@ -31,7 +32,7 @@ public class EliminaUtenteServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		try {
 			ServletContext context = config.getServletContext();
-			System.out.println("init()");
+
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(context.getInitParameter("dbUrl"), context.getInitParameter("dbUser"), context.getInitParameter("dbPassword"));
 		} catch (SQLException e) {
@@ -60,16 +61,27 @@ public class EliminaUtenteServlet extends HttpServlet {
 			writer.println("Pannello di controllo bibioteca");
 			writer.println("Utente loggato: " + username);
 
-			Integer id = Integer.valueOf(request.getParameter("id"));
+			String nome = request.getParameter("nome");
+			String cognome = request.getParameter("cognome");
+			/*
+			 * Il form chiederà la data di nascita come string ma la converte in Date
+			 */
+			String dataNascitaStringa = request.getParameter("dataNascita");
+			Date dataNascita = null;
+			if (dataNascitaStringa != null) {
+				dataNascita = Date.valueOf(dataNascitaStringa);
+			}
 
 			try {
-				PreparedStatement statement = connection.prepareStatement(DELETEQUERY);
-				statement.setInt(1, id);
+				PreparedStatement statement = connection.prepareStatement(INSERTQUERY);
+				statement.setString(1, nome);
+				statement.setString(2, cognome);
+				statement.setDate(3, dataNascita);
 				int result = statement.executeUpdate();
 				if (result > 0) {
-					writer.print("<h1>L'utente è stato eliminato</h1");
+					writer.print("<h1>Utente creato con successo</h1>");
 				} else {
-					writer.print("<h1>Errore nel terminare l'utente</h1>");
+					writer.print("<h1>Errore nella creazione utente</h1>");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -77,7 +89,7 @@ public class EliminaUtenteServlet extends HttpServlet {
 
 		} else {
 			writer.print("Accesso vietato. Fare il login per continuare");
-			request.getRequestDispatcher("login.html").include(request, response);
+			request.getRequestDispatcher("/index.html").include(request, response);
 		}
 		writer.close();
 

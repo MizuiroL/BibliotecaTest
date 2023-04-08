@@ -37,7 +37,7 @@ public class ControlPanelServlet extends HttpServlet {
 			request.getRequestDispatcher("/managementnavbar.html").include(request, response);
 		} else {
 			writer.print("Accesso vietato. Fare il login per continuare");
-			request.getRequestDispatcher("login.html").include(request, response);
+			request.getRequestDispatcher("index.html").include(request, response);
 		}
 		writer.close();
 	}

@@ -1,4 +1,4 @@
-package it.luca.biblioteca.management.utente;
+package it.luca.biblioteca.administration.utente;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -13,16 +13,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
- * Servlet implementation class VisualizzaUtentiServlet
+ * Servlet implementation class EliminaUtenteServlet
  */
-@WebServlet(urlPatterns = "/controlpanel/visualizzaUtenti")
-public class VisualizzaUtentiServlet extends HttpServlet {
+@WebServlet("/controlPanel/eliminaUtente")
+public class EliminaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static final String DELETEQUERY = "DELETE FROM utente WHERE id = ?";
 	private Connection connection;
 
 	/**
@@ -31,7 +31,6 @@ public class VisualizzaUtentiServlet extends HttpServlet {
 	public void init(ServletConfig config) throws ServletException {
 		try {
 			ServletContext context = config.getServletContext();
-
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			connection = DriverManager.getConnection(context.getInitParameter("dbUrl"), context.getInitParameter("dbUser"), context.getInitParameter("dbPassword"));
 		} catch (SQLException e) {
@@ -42,10 +41,10 @@ public class VisualizzaUtentiServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter writer = response.getWriter();
 		request.getRequestDispatcher("/navigationpanel.html").include(request, response);
@@ -60,58 +59,34 @@ public class VisualizzaUtentiServlet extends HttpServlet {
 			writer.println("Pannello di controllo bibioteca");
 			writer.println("Utente loggato: " + username);
 
-			try {
-				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT * FROM utente;");
-				writer.print("<table>");
-				writer.print("<tr>");
-				writer.print("<th>");
-				writer.println("Id");
-				writer.print("</th>");
-				writer.print("<th>");
-				writer.println("Nome");
-				writer.print("</th>");
-				writer.print("<th>");
-				writer.println("Cognome");
-				writer.print("</th>");
-				writer.print("<th>");
-				writer.println("Data di nascita");
-				writer.print("</th>");
-				writer.print("</tr>");
-				while (resultSet.next()) {
-					writer.println("<tr>");
-					writer.println("<td>");
-					writer.print(resultSet.getInt(1));
-					writer.println("</td>");
-					writer.println("<td>");
-					writer.print(resultSet.getString(2));
-					writer.println("</td>");
-					writer.println("<td>");
-					writer.print(resultSet.getString(3));
-					writer.println("</td>");
-					writer.println("<td>");
-					writer.print(resultSet.getDate(4));
-					writer.println("</td>");
-					writer.println("</tr>");
-				}
-				writer.print("</table>");
+			Integer id = Integer.valueOf(request.getParameter("id"));
 
+			try {
+				PreparedStatement statement = connection.prepareStatement(DELETEQUERY);
+				statement.setInt(1, id);
+				int result = statement.executeUpdate();
+				if (result > 0) {
+					writer.print("<h1>L'utente è stato eliminato</h1");
+				} else {
+					writer.print("<h1>Errore nel terminare l'utente</h1>");
+				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 
 		} else {
 			writer.print("Accesso vietato. Fare il login per continuare");
-			request.getRequestDispatcher("login.html").include(request, response);
+			request.getRequestDispatcher("/index.html").include(request, response);
 		}
 		writer.close();
 
 	}
 
-	@Override
+	/**
+	 * @see Servlet#destroy()
+	 */
 	public void destroy() {
 		try {
-			System.out.println("destroy()");
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();

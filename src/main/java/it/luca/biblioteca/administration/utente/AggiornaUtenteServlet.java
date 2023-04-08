@@ -1,4 +1,4 @@
-package it.luca.biblioteca.management.utente;
+package it.luca.biblioteca.administration.utente;
 
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -17,19 +17,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * Servlet implementation class CreaUtenteServlet
- */
-@WebServlet(urlPatterns = "/controlpanel/creaUtente")
-public class CreaUtenteServlet extends HttpServlet {
+@WebServlet("/controlpanel/aggiornaUtente")
+public class AggiornaUtenteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final String INSERTQUERY = "INSERT INTO utente(nome, cognome, data_nascita) VALUES(?,?,?)";
+	private static final String UPDATEQUERY = "UPDATE utente SET nome=?, cognome=?, data_nascita=? WHERE id=?;";
 	private Connection connection;
 
-	/**
-	 * @see Servlet#init(ServletConfig)
-	 */
-	public void init(ServletConfig config) throws ServletException {
+	public void init(ServletConfig config) {
 		try {
 			ServletContext context = config.getServletContext();
 
@@ -40,6 +34,7 @@ public class CreaUtenteServlet extends HttpServlet {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	/**
@@ -58,7 +53,7 @@ public class CreaUtenteServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			String username = (String) session.getAttribute("username");
-			writer.println("Pannello di controllo bibioteca");
+			writer.println("Servlet aggiornamento utente");
 			writer.println("Utente loggato: " + username);
 
 			String nome = request.getParameter("nome");
@@ -71,17 +66,19 @@ public class CreaUtenteServlet extends HttpServlet {
 			if (dataNascitaStringa != null) {
 				dataNascita = Date.valueOf(dataNascitaStringa);
 			}
+			Integer id = Integer.valueOf(request.getParameter("id"));
 
 			try {
-				PreparedStatement statement = connection.prepareStatement(INSERTQUERY);
+				PreparedStatement statement = connection.prepareStatement(UPDATEQUERY);
 				statement.setString(1, nome);
 				statement.setString(2, cognome);
 				statement.setDate(3, dataNascita);
+				statement.setInt(4, id);
 				int result = statement.executeUpdate();
 				if (result > 0) {
-					writer.print("<h1>Utente creato con successo</h1>");
+					writer.print("<h1>L'utente è stato modificato</h1");
 				} else {
-					writer.print("<h1>Errore nella creazione utente</h1>");
+					writer.print("<h1>Errore nel salvare l'utente</h1>");
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -89,21 +86,19 @@ public class CreaUtenteServlet extends HttpServlet {
 
 		} else {
 			writer.print("Accesso vietato. Fare il login per continuare");
-			request.getRequestDispatcher("login.html").include(request, response);
+			request.getRequestDispatcher("/index.html").include(request, response);
 		}
 		writer.close();
 
 	}
 
-	/**
-	 * @see Servlet#destroy()
-	 */
 	public void destroy() {
 		try {
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 }

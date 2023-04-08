@@ -49,7 +49,7 @@
     <description></description>
     <display-name>AggiornaUtenteServlet</display-name>
     <servlet-name>AggiornaUtenteServlet</servlet-name>
-    <servlet-class>it.luca.biblioteca.management.utente.AggiornaUtenteServlet</servlet-class>
+    <servlet-class>it.luca.biblioteca.administration.utente.AggiornaUtenteServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>AggiornaUtenteServlet</servlet-name>
@@ -60,7 +60,7 @@
     <description></description>
     <display-name>CreaUtenteServlet</display-name>
     <servlet-name>CreaUtenteServlet</servlet-name>
-    <servlet-class>it.luca.biblioteca.management.utente.CreaUtenteServlet</servlet-class>
+    <servlet-class>it.luca.biblioteca.administration.utente.CreaUtenteServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>CreaUtenteServlet</servlet-name>
